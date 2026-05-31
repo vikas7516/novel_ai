@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environment — never commit this
+venv/
+.venv/
+env/
+
+# Model outputs — these are huge, train on Lightning AI and keep local
+novel_model_stage1/
+novel_model_stage1_final/
+novel_model_stage1_merged/
+novel_model_final_orpo/
+novel_model_final_weights/
+
+# Dataset artifacts built by 02_build_orpo_dataset.py
+orpo_dataset.jsonl
+
+# Misc
+.DS_Store
+*.log
+nohup.out
+scraper.log
