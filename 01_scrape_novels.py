@@ -45,7 +45,7 @@ except ImportError:
 OUTPUT_DIR   = Path("raw_novels")
 PROGRESS_FILE = Path("scrape_progress.json")
 NOVELS_FILE  = Path("novels.txt")
-WORKERS           = 5    # Concurrent novels at once — good for 8-CPU machines
+WORKERS           = 3    # Concurrent novels at once — good for 4-CPU machines
 GIT_PUSH_INTERVAL = 30   # Minutes between auto git pushes (0 to disable)
 
 OUTPUT_DIR.mkdir(exist_ok=True)
