@@ -27,11 +27,22 @@ from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 from bs4 import BeautifulSoup
 
+# playwright-stealth v1 uses stealth_sync(); v2 uses Stealth()
+_apply_stealth = None
 try:
-    from playwright_stealth import stealth_sync
-    _STEALTH_AVAILABLE = True
+    from playwright_stealth import stealth_sync   # v1.x
+    _apply_stealth = stealth_sync
 except ImportError:
-    _STEALTH_AVAILABLE = False
+    try:
+        from playwright_stealth import Stealth     # v2.x
+        _stealth_v2 = Stealth()
+        _apply_stealth = _stealth_v2.apply_stealth_sync
+    except (ImportError, AttributeError):
+        pass
+
+if _apply_stealth:
+    print("[INFO] playwright-stealth loaded OK")
+else:
     print("[WARN] playwright-stealth not installed. Run: pip install playwright-stealth")
     print("       Continuing without stealth mode (higher Cloudflare detection risk).")
 
@@ -45,8 +56,8 @@ except ImportError:
 OUTPUT_DIR   = Path("raw_novels")
 PROGRESS_FILE = Path("scrape_progress.json")
 NOVELS_FILE  = Path("novels.txt")
-WORKERS           = 3    # Concurrent novels at once — good for 4-CPU machines
-GIT_PUSH_INTERVAL = 30   # Minutes between auto git pushes (0 to disable)
+WORKERS           = 5    # Concurrent novels at once — good for 8-CPU machines
+GIT_PUSH_INTERVAL = 0    # Minutes between auto git pushes (0 to disable)
 
 OUTPUT_DIR.mkdir(exist_ok=True)
 
@@ -143,11 +154,13 @@ def git_push_loop():
 def wait_for_cloudflare(page, timeout=20_000):
     try:
         page.wait_for_function(
-            "() => !document.title.includes('Just a moment')",
+            "() => !document.title.includes('Just a moment') && !document.title.includes('Cloudflare')",
             timeout=timeout
         )
     except PWTimeout:
-        pass  # headless can't solve CAPTCHAs; just carry on
+        if "Just a moment" in page.title() or "Cloudflare" in page.title():
+            raise RuntimeError("Stuck on Cloudflare challenge.")
+        # If it's a timeout but the title is fine, just carry on
 
 def chapter_num(url: str) -> float:
     m = re.search(r'/chapter-(\d+(?:\.\d+)?)', url)
@@ -168,7 +181,7 @@ def get_chapter_urls(page, novel_url: str) -> list[dict]:
     while current:
         page.goto(current, wait_until="domcontentloaded", timeout=60_000)
         wait_for_cloudflare(page)  # Critical on cloud IPs — Cloudflare challenges /chapters too
-        page.wait_for_timeout(1500)
+        page.wait_for_timeout(random.randint(2500, 4500))  # Increased delay to prevent Cloudflare rate-limits during pagination
         soup = BeautifulSoup(page.content(), "html.parser")
 
         for a in soup.find_all("a", href=True):
@@ -330,8 +343,8 @@ def queue_worker(novel_queue: queue.Queue, progress: dict, results: dict):
         ctx.route("**/googletagmanager.com/**", lambda r: r.abort())
 
         page = ctx.new_page()
-        if _STEALTH_AVAILABLE:
-            stealth_sync(page)  # Patch all headless detection vectors
+        if _apply_stealth:
+            _apply_stealth(page)  # Patch all headless detection vectors
 
         try:
             while True:
