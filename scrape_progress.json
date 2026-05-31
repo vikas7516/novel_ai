@@ -563,7 +563,8 @@
       "https://novelfire.net/book/a-regressors-tale-of-cultivation/chapter-388",
       "https://novelfire.net/book/a-regressors-tale-of-cultivation/chapter-389",
       "https://novelfire.net/book/a-regressors-tale-of-cultivation/chapter-390",
-      "https://novelfire.net/book/a-regressors-tale-of-cultivation/chapter-391"
+      "https://novelfire.net/book/a-regressors-tale-of-cultivation/chapter-391",
+      "https://novelfire.net/book/a-regressors-tale-of-cultivation/chapter-863"
     ],
     "failed": []
   },
@@ -1287,7 +1288,8 @@
       "https://novelfire.net/book/reverend-insanity/chapter-716",
       "https://novelfire.net/book/reverend-insanity/chapter-717",
       "https://novelfire.net/book/reverend-insanity/chapter-718",
-      "https://novelfire.net/book/reverend-insanity/chapter-719"
+      "https://novelfire.net/book/reverend-insanity/chapter-719",
+      "https://novelfire.net/book/reverend-insanity/chapter-2334"
     ],
     "failed": []
   },
@@ -1722,7 +1724,8 @@
       "https://novelfire.net/book/shadow-slave/chapter-427",
       "https://novelfire.net/book/shadow-slave/chapter-428",
       "https://novelfire.net/book/shadow-slave/chapter-429",
-      "https://novelfire.net/book/shadow-slave/chapter-430"
+      "https://novelfire.net/book/shadow-slave/chapter-430",
+      "https://novelfire.net/book/shadow-slave/chapter-3013"
     ],
     "failed": []
   },
@@ -1931,11 +1934,23 @@
       "https://novelfire.net/book/kill-the-sun/chapter-201",
       "https://novelfire.net/book/kill-the-sun/chapter-202",
       "https://novelfire.net/book/kill-the-sun/chapter-203",
-      "https://novelfire.net/book/kill-the-sun/chapter-204"
+      "https://novelfire.net/book/kill-the-sun/chapter-204",
+      "https://novelfire.net/book/kill-the-sun/chapter-205",
+      "https://novelfire.net/book/kill-the-sun/chapter-206",
+      "https://novelfire.net/book/kill-the-sun/chapter-207",
+      "https://novelfire.net/book/kill-the-sun/chapter-208",
+      "https://novelfire.net/book/kill-the-sun/chapter-209",
+      "https://novelfire.net/book/kill-the-sun/chapter-210",
+      "https://novelfire.net/book/kill-the-sun/chapter-211",
+      "https://novelfire.net/book/kill-the-sun/chapter-212",
+      "https://novelfire.net/book/kill-the-sun/chapter-213",
+      "https://novelfire.net/book/kill-the-sun/chapter-214",
+      "https://novelfire.net/book/kill-the-sun/chapter-215",
+      "https://novelfire.net/book/kill-the-sun/chapter-216",
+      "https://novelfire.net/book/kill-the-sun/chapter-217",
+      "https://novelfire.net/book/kill-the-sun/chapter-218"
     ],
-    "failed": [
-      "https://novelfire.net/book/kill-the-sun/chapter-205"
-    ]
+    "failed": []
   },
   "the-beginning-after-the-end": {
     "done": [
@@ -2220,7 +2235,33 @@
       "https://novelfire.net/book/lord-of-the-mysteries/chapter-224",
       "https://novelfire.net/book/lord-of-the-mysteries/chapter-225",
       "https://novelfire.net/book/lord-of-the-mysteries/chapter-226",
-      "https://novelfire.net/book/lord-of-the-mysteries/chapter-227"
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-227",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-228",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-229",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-230",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-231",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-232",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-233",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-234",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-235",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-236",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-237",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-238",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-239",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-240",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-241",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-242",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-243",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-244",
+      "https://novelfire.net/book/lord-of-the-mysteries/chapter-245"
+    ],
+    "failed": []
+  },
+  "omniscient-readers-viewpoint": {
+    "done": [
+      "https://novelfire.net/book/omniscient-readers-viewpoint/chapter-1",
+      "https://novelfire.net/book/omniscient-readers-viewpoint/chapter-2",
+      "https://novelfire.net/book/omniscient-readers-viewpoint/chapter-3"
     ],
     "failed": []
   }
