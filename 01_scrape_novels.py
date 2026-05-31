@@ -45,8 +45,8 @@ except ImportError:
 OUTPUT_DIR   = Path("raw_novels")
 PROGRESS_FILE = Path("scrape_progress.json")
 NOVELS_FILE  = Path("novels.txt")
-WORKERS          = 3    # Concurrent novels at once
-GIT_PUSH_INTERVAL = 30  # Minutes between auto git pushes (0 to disable)
+WORKERS           = 5    # Concurrent novels at once — good for 8-CPU machines
+GIT_PUSH_INTERVAL = 30   # Minutes between auto git pushes (0 to disable)
 
 OUTPUT_DIR.mkdir(exist_ok=True)
 
@@ -69,10 +69,13 @@ def load_progress() -> dict:
     return {}
 
 def save_progress(progress: dict):
-    """Thread-safe progress save."""
+    """Write progress to disk. Must be called WITHOUT holding _progress_lock."""
+    # Take a snapshot under the lock so the file write itself is not blocking
+    # other threads from updating the dict.
     with _progress_lock:
-        with open(PROGRESS_FILE, "w") as f:
-            json.dump(progress, f, indent=2)
+        snapshot = json.dumps(progress, indent=2)
+    with open(PROGRESS_FILE, "w") as f:
+        f.write(snapshot)
 
 def load_urls_from_file() -> list[str]:
     """Read novel URLs from novels.txt. Creates an example file if missing."""
@@ -164,7 +167,7 @@ def get_chapter_urls(page, novel_url: str) -> list[dict]:
 
     while current:
         page.goto(current, wait_until="domcontentloaded", timeout=60_000)
-        page.wait_for_timeout(2000)
+        page.wait_for_timeout(1500)  # Give JS a moment; 1.5 s is enough
         soup = BeautifulSoup(page.content(), "html.parser")
 
         for a in soup.find_all("a", href=True):
@@ -247,8 +250,12 @@ def scrape_one_novel(page, novel_url: str, progress: dict) -> tuple[str, bool]:
     chapters = get_chapter_urls(page, novel_url)
     print(f"{tag} Found {len(chapters)} chapters.")
 
+    # Bug fix: always ensure novel_progress is seeded into the shared progress
+    # dict, even on first encounter, so other threads can see it.
     with _progress_lock:
-        novel_progress = progress.get(slug, {"done": [], "failed": []})
+        if slug not in progress:
+            progress[slug] = {"done": [], "failed": []}
+        novel_progress = progress[slug]
 
     done_set = set(novel_progress["done"])
     remaining = [c for c in chapters if c["url"] not in done_set]
@@ -267,12 +274,12 @@ def scrape_one_novel(page, novel_url: str, progress: dict) -> tuple[str, bool]:
                 f.write(f"\n\n{'─'*60}\n{ch['title']}\n{'─'*60}\n\n")
                 f.write(text)
                 f.flush()
+                # Update shared dict under lock, then write to disk outside lock
                 with _progress_lock:
                     novel_progress["done"].append(ch["url"])
                     if ch["url"] in novel_progress.get("failed", []):
                         novel_progress["failed"].remove(ch["url"])
-                    progress[slug] = novel_progress
-                save_progress(progress)
+                save_progress(progress)  # called outside lock — safe
             else:
                 # Log the failure and stop this novel to preserve chapter order.
                 # The queue worker will immediately pick up the next novel.
@@ -280,9 +287,8 @@ def scrape_one_novel(page, novel_url: str, progress: dict) -> tuple[str, bool]:
                 with _progress_lock:
                     if ch["url"] not in novel_progress.get("failed", []):
                         novel_progress.setdefault("failed", []).append(ch["url"])
-                    progress[slug] = novel_progress
-                save_progress(progress)
-                return slug, False  # signal failure without crashing the worker
+                save_progress(progress)  # called outside lock — safe
+                return slug, False
 
             random_delay()
 
