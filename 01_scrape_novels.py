@@ -167,7 +167,8 @@ def get_chapter_urls(page, novel_url: str) -> list[dict]:
 
     while current:
         page.goto(current, wait_until="domcontentloaded", timeout=60_000)
-        page.wait_for_timeout(1500)  # Give JS a moment; 1.5 s is enough
+        wait_for_cloudflare(page)  # Critical on cloud IPs — Cloudflare challenges /chapters too
+        page.wait_for_timeout(1500)
         soup = BeautifulSoup(page.content(), "html.parser")
 
         for a in soup.find_all("a", href=True):
@@ -256,6 +257,9 @@ def scrape_one_novel(page, novel_url: str, progress: dict) -> tuple[str, bool]:
         if slug not in progress:
             progress[slug] = {"done": [], "failed": []}
         novel_progress = progress[slug]
+
+    if not chapters:
+        raise RuntimeError(f"{tag} Got 0 chapters — likely a Cloudflare block or bad URL. Skipping.")
 
     done_set = set(novel_progress["done"])
     remaining = [c for c in chapters if c["url"] not in done_set]
